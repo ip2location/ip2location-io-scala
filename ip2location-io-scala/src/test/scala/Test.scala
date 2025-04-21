@@ -5,6 +5,7 @@ object FullTest {
     try {
       // Configures IP2Location.io API key
       val strApiKey = "YOUR_API_KEY"
+
       val config = new Configuration()
       config.setApiKey(strApiKey)
 
@@ -32,6 +33,14 @@ object FullTest {
 
       // Get domain extension (gTLD or ccTLD) from URL or domain name
       System.out.println(whois.toDomainExtension("example.com"))
+
+      // Lookup ip address hosted domains data
+      val strIPAddress2 = "8.8.8.8"
+      val page = 1
+      val hd = new HostedDomain(config)
+      val myResult3 = hd.lookUp(strIPAddress2, page)
+      System.out.println(myResult3)
+
     } catch {
       case e: Exception => System.out.println(e)
         e.printStackTrace(System.out)

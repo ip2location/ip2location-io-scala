@@ -1,18 +1,18 @@
 package com.ip2location
 
-import com.google.gson._
-
 import java.net.http.{HttpClient, HttpRequest, HttpResponse}
 import java.net.{IDN, URI, URISyntaxException, URLEncoder}
+
+import com.google.gson.{JsonObject, JsonParser}
 
 /**
  * This class performs the lookup of WHOIS data from a domain by querying the IP2WHOIS API.
  * <p>
- * Copyright (c) 2002-2023 IP2Location.com
+ * Copyright (c) 2002-2025 IP2Location.com
  * <p>
  *
  * @author IP2Location.com
- * @version 1.0.0 */
+ * @version 1.1.0 */
 class DomainWhois(Config: Configuration) {
   private val BASE_URL = "https://api.ip2whois.com/v2"
   private val SOURCE = "sdk-scala-iplio"
