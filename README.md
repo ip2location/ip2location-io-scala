@@ -8,6 +8,11 @@ There is also a Hosted Domain API that allowing users to get the list of hosted 
 
 This library requires API key to function. You may sign up for a free API key at https://www.ip2location.io/pricing.
 
+Developer Documentation
+=====================
+
+To learn more about installation, usage, and code examples, please visit the developer documentation at [https://ip2location-io-scala.readthedocs.io/en/latest/index.html](https://ip2location-io-scala.readthedocs.io/en/latest/index.html).
+
 
 Pre-requisite
 =============
@@ -16,85 +21,9 @@ IntelliJ IDEA
 
 Usage Example
 ============
-### Lookup IP Address Geolocation Data
-```scala
-// Configures IP2Location.io API key
-val strApiKey = "YOUR_API_KEY"
-val config = new Configuration()
-config.setApiKey(strApiKey)
 
-// Lookup ip address geolocation data
-val strIPAddress = "8.8.8.8"
-val lang = "es"
-val ipl = new IPGeolocation(config)
-val myResult = ipl.lookUp(strIPAddress, lang) // lang param only supported in Plus and Security plans, so omit if not necessary
-System.out.println(myResult)
-```
+Refer to the [Sample Code section](https://ip2location-io-scala.readthedocs.io/en/latest/quickstart.html#sample-codes)
 
-### Lookup Domain Information
-```scala
-// Configures IP2Location.io API key
-val strApiKey = "YOUR_API_KEY"
-val config = new Configuration()
-config.setApiKey(strApiKey)
-
-// Lookup domain information
-val strDomain = "locaproxy.com"
-val whois = new DomainWhois(config)
-val myResult = whois.lookUp(strDomain)
-System.out.println(myResult)
-```
-
-### Convert Normal Text to Punycode
-```scala
-val config = new Configuration()
-val whois = new DomainWhois(config)
-
-// Convert normal text to punycode
-System.out.println(whois.toPunycode("täst.de"))
-```
-
-### Convert Punycode to Normal Text
-```scala
-val config = new Configuration()
-val whois = new DomainWhois(config)
-
-// Convert punycode to normal text
-System.out.println(whois.toNormalText("xn--tst-qla.de"))
-```
-
-### Get Domain Name
-```scala
-val config = new Configuration()
-val whois = new DomainWhois(config)
-
-// Get domain name from URL
-System.out.println(whois.toDomainName("https://www.example.com/exe"))
-```
-
-### Get Domain Extension
-```scala
-val config = new Configuration()
-val whois = new DomainWhois(config)
-
-// Get domain extension (gTLD or ccTLD) from URL or domain name
-System.out.println(whois.toDomainExtension("example.com"))
-```
-
-### Lookup IP Address Hosted Domains Data
-```scala
-// Configures IP2Location.io API key
-val strApiKey = "YOUR_API_KEY"
-val config = new Configuration()
-config.setApiKey(strApiKey)
-
-// Lookup ip address hosted domains data
-val strIPAddress = "8.8.8.8"
-val page = 1
-val hd = new HostedDomain(config)
-val myResult = hd.lookUp(strIPAddress, page)
-System.out.println(myResult)
-```
 
 Response Parameter
 ============
@@ -151,6 +80,9 @@ Response Parameter
 |time_zone_info.current_time|string|Current time in ISO 8601 format.|
 |time_zone_info.gmt_offset|integer|GMT offset value in seconds.|
 |time_zone_info.is_dst|boolean|Indicate if the time zone value is in DST.|
+|time_zone_info.abbreviation|string|The time zone abbreviation of the Olson time zone, for example EST and EEST.|
+|time_zone_info.dst_start_date|string|The date (UTC) of Daylight Saving Time (DST) begins.|
+|time_zone_info.dst_end_date|string|The date (UTC) of Daylight Saving Time (DST) ends.|
 |time_zone_info.sunrise|string|Time of sunrise. (hh:mm format in local time, i.e, 07:47)|
 |time_zone_info.sunset|string|Time of sunset. (hh:mm format in local time, i.e 19:50)|
 |geotargeting.metro|string|Metro code based on zip/postal code.|
