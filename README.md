@@ -1,475 +1,274 @@
-IP2Location.io Scala SDK
-=======================
-This Scala library enables user to query for an enriched data set, such as country, region, district, city, latitude & longitude, ZIP code, time zone, ASN, ISP, domain, net speed, IDD code, area code, weather station data, MNC, MCC, mobile brand, elevation, usage type, address type, advertisement category, fraud score and proxy data with an IP address. It supports both IPv4 and IPv6 address lookup.
+# IP2Location.io Scala SDK — IP Geolocation, Domain WHOIS & Hosted Domain Lookup
 
-In addition, this library provides WHOIS lookup api that helps users to obtain domain information, WHOIS record, by using a domain name. The WHOIS API returns a comprehensive WHOIS data such as creation date, updated date, expiration date, domain age, the contact information of the registrant, mailing address, phone number, email address, nameservers the domain is using and much more.
+**IP2Location.io Scala SDK** is a Scala 3 library for retrieving **IPv4 and IPv6 geolocation, network, and IP intelligence data** through the [IP2Location.io API](https://www.ip2location.io/). It also supports **domain WHOIS lookup**, domain-name and Punycode utilities, and **hosted-domain lookup**. Use the SDK's Scala classes to query these services without manually constructing HTTP requests.
 
-There is also a Hosted Domain API that allowing users to get the list of hosted domain names by IP address in real time. The REST API supports both IPv4 and IPv6 address lookup.
+**Quick links:** [Get an API key](https://www.ip2location.io/pricing) · [Developer documentation](https://ip2location-io-scala.readthedocs.io/en/latest/index.html) · [Scala API reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html) · [Maven Central package](https://central.sonatype.com/artifact/com.ip2location/ip2location-io-scala_3)
 
-This library requires API key to function. You may sign up for a free API key at https://www.ip2location.io/pricing.
+## Features
 
-Developer Documentation
-=====================
+- **IPv4 and IPv6 geolocation:** Look up country, region, district, city, latitude, longitude, postal code, and other location fields.
+- **Network and ASN information:** Retrieve available ASN, AS name, ISP, associated domain, connection speed, usage type, and related attributes.
+- **Time zone and localization data:** Access available time zone and daylight saving information; request translated continent, country, region, and city names on eligible Plus and Security plans.
+- **Proxy and security signals:** Access plan-dependent proxy, VPN, Tor, data center, web crawler, AI crawler, and other indicators, including available fraud scores.
+- **Additional IP intelligence:** Access eligible mobile carrier (MCC/MNC), country, weather station, elevation, and advertising category data.
+- **Domain WHOIS lookup:** Retrieve available domain registration dates, registrar, nameservers, domain status, and contact information.
+- **Internationalized domain and URL utilities:** Convert Unicode domains to/from Punycode, extract a domain from a URL, and obtain a domain extension.
+- **Hosted domains:** Retrieve a paginated list of domains hosted on an IPv4 or IPv6 address.
 
-To learn more about installation, usage, and code examples, please visit the developer documentation at [https://ip2location-io-scala.readthedocs.io/en/latest/index.html](https://ip2location-io-scala.readthedocs.io/en/latest/index.html).
+> **Plan availability:** Available fields and security signals vary by API plan and by queried address or domain. Check the [pricing page](https://www.ip2location.io/pricing) and [Scala API field reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html) before relying on optional values.
 
+## SDK classes
 
-Pre-requisite
-=============
-IntelliJ IDEA
+The [Scala SDK API reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html) documents these classes and methods:
 
+| Class / method | Description |
+| --- | --- |
+| `new Configuration()` | Creates an SDK configuration object. |
+| `config.setApiKey(apiKey)` | Sets the API key for subsequent lookups. |
+| `new IPGeolocation(config)` | Creates a geolocation lookup client. |
+| `geo.lookUp(ipAddress, lang)` | Retrieves IP geolocation and available network/security information; `lang` is optional. |
+| `new DomainWhois(config)` | Creates a domain WHOIS client. |
+| `whois.lookUp(domain)` | Retrieves WHOIS information for a domain. |
+| `whois.toPunycode(domain)` | Converts a Unicode domain to Punycode. |
+| `whois.toNormalText(domain)` | Converts a Punycode domain to normal text. |
+| `whois.toDomainName(url)` | Extracts the domain name from a URL. |
+| `whois.toDomainExtension(domainOrUrl)` | Extracts the domain extension from a domain or URL. |
+| `new HostedDomain(config)` | Creates a hosted-domain lookup client. |
+| `hosted.lookUp(ipAddress, page)` | Retrieves hosted domains for an IP address, with optional pagination. |
 
-Usage Example
-============
+The SDK documentation shows lookup results printed as JSON. The response fields for each service are documented in the [API reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html).
 
-Refer to the [Sample Code section](https://ip2location-io-scala.readthedocs.io/en/latest/quickstart.html#sample-codes)
+## API access and query limits
 
+IP2Location.io provides keyless access to limited IP geolocation requests through its REST API and a Free plan with an API key:
 
-Response Parameter
-============
-### IP Geolocation Lookup function
-| Parameter | Type | Description |
-|---|---|---|
-|ip|string|IP address.|
-|country_code|string|Two-character country code based on ISO 3166.|
-|country_name|string|Country name based on ISO 3166.|
-|region_name|string|Region or state name.|
-|city_name|string|City name.|
-|latitude|double|City latitude. Defaults to capital city latitude if city is unknown.|
-|longitude|double|City longitude. Defaults to capital city longitude if city is unknown.|
-|zip_code|string|ZIP/Postal code.|
-|time_zone|string|UTC time zone (with DST supported).|
-|asn|string|Autonomous system number (ASN).|
-|as|string|Autonomous system (AS) name.|
-|isp|string|Internet Service Provider or company's name.|
-|domain|string|Internet domain name associated with IP address range.|
-|net_speed|string|Internet connection type. DIAL = dial-up, DSL = broadband/cable/fiber/mobile, COMP = company/T1|
-|idd_code|string|The IDD prefix to call the city from another country.|
-|area_code|string|A varying length number assigned to geographic areas for calls between cities.|
-|weather_station_code|string|The special code to identify the nearest weather observation station.|
-|weather_station_name|string|The name of the nearest weather observation station.|
-|mcc|string|Mobile Country Codes (MCC) as defined in ITU E.212 for use in identifying mobile stations in wireless telephone networks, particularly GSM and UMTS networks.|
-|mnc|string|Mobile Network Code (MNC) is used in combination with a Mobile Country Code (MCC) to uniquely identify a mobile phone operator or carrier.|
-|mobile_brand|string|Commercial brand associated with the mobile carrier.|
-|elevation|integer|Average height of city above sea level in meters (m).|
-|usage_type|string|Usage type classification of ISP or company.|
-|address_type|string|IP address types as defined in Internet Protocol version 4 (IPv4) and Internet Protocol version 6 (IPv6).|
-|continent.name|string|Continent name.|
-|continent.code|string|Two-character continent code.|
-|continent.hemisphere|array|The hemisphere of where the country located. The data in array format with first item indicates (north/south) hemisphere and second item indicates (east/west) hemisphere information.|
-|continent.translation|object|Translation data based on the given lang code.|
-|district|string|District or county name.|
-|country.name|string|Country name based on ISO 3166.|
-|country.alpha3_code|string|Three-character country code based on ISO 3166.|
-|country.numeric_code|string|Three-character country numeric code based on ISO 3166.|
-|country.demonym|string|Native of the country.|
-|country.flag|string|URL of the country flag image.|
-|country.capital|string|Capital of the country.|
-|country.total_area|integer|Total area in km2.|
-|country.population|integer|Population of the country.|
-|country.currency|object|Currency of the country.|
-|country.language|object|Language of the country.|
-|country.tld|string|Country-Code Top-Level Domain.|
-|country.translation|object|Translation data based on the given lang code.|
-|region.name|string|Region or state name.|
-|region.code|string|ISO3166-2 code.|
-|region.translation|object|Translation data based on the given lang code.|
-|city.name|string| City name.|
-|city.translation|object|Translation data based on the given lang code.|
-|time_zone_info.olson|string|Time zone in Olson format.|
-|time_zone_info.current_time|string|Current time in ISO 8601 format.|
-|time_zone_info.gmt_offset|integer|GMT offset value in seconds.|
-|time_zone_info.is_dst|boolean|Indicate if the time zone value is in DST.|
-|time_zone_info.abbreviation|string|The time zone abbreviation of the Olson time zone, for example EST and EEST.|
-|time_zone_info.dst_start_date|string|The date (UTC) of Daylight Saving Time (DST) begins.|
-|time_zone_info.dst_end_date|string|The date (UTC) of Daylight Saving Time (DST) ends.|
-|time_zone_info.sunrise|string|Time of sunrise. (hh:mm format in local time, i.e, 07:47)|
-|time_zone_info.sunset|string|Time of sunset. (hh:mm format in local time, i.e 19:50)|
-|geotargeting.metro|string|Metro code based on zip/postal code.|
-|ads_category|string|The domain category code based on IAB Tech Lab Content Taxonomy.|
-|ads_category_name|string|The domain category based on IAB Tech Lab Content Taxonomy. These categories are comprised of Tier-1 and Tier-2 (if available) level categories widely used in services like advertising, Internet security and filtering appliances.|
-|is_proxy|boolean|Whether is a proxy or not.|
-|fraud_score|integer|Potential risk score (0 - 99) associated with IP address. A higher IP2Proxy Fraud Score indicates a greater likelihood of fraudulent activity and a lower reputation.|
-|proxy.last_seen|integer|Proxy last seen in days.|
-|proxy.proxy_type|string|Type of proxy.|
-|proxy.threat|string|Security threat reported.|
-|proxy.provider|string|Name of VPN provider if available.|
-|proxy.is_vpn|boolean|Anonymizing VPN services.|
-|proxy.is_tor|boolean|Tor Exit Nodes.|
-|proxy.is_data_center|boolean|Hosting Provider, Data Center or Content Delivery Network.|
-|proxy.is_public_proxy|boolean|Public Proxies.|
-|proxy.is_web_proxy|boolean|Web Proxies.|
-|proxy.is_web_crawler|boolean|Search Engine Robots.|
-|proxy.is_ai_crawler|boolean|Specifically identifies IP addresses used by artificial intelligence companies to crawl the web for LLM training data or real-time retrieval (RAG).|
-|proxy.is_residential_proxy|boolean|Residential proxies.|
-|proxy.is_spammer|boolean|Email and forum spammers.|
-|proxy.is_scanner|boolean|Network security scanners.|
-|proxy.is_botnet|boolean|Malware infected devices.|
-|proxy.is_bogon|boolean|Unassigned or illegitimate IP addresses announced via BGP.|
-|proxy.is_consumer_privacy_network|boolean|Consumer Privacy Networks.|
-|proxy.is_enterprise_private_network|boolean|Enterprise Private Networks.|
+| API service | Keyless (no API key) | Free plan (with API key) |
+| --- | --- | --- |
+| IP Geolocation API | **1,000 queries/day** | **50,000 queries/month** |
+| Domain WHOIS API | — | **500 queries/month** |
+| Hosted Domain API | — | **50 queries/month** |
 
-```json
-{
-  "ip": "8.8.8.8",
-  "country_code": "US",
-  "country_name": "United States of America",
-  "region_name": "California",
-  "city_name": "Mountain View",
-  "latitude": 37.405992,
-  "longitude": -122.078515,
-  "zip_code": "94043",
-  "time_zone": "-07:00",
-  "asn": "15169",
-  "as": "Google LLC",
-  "isp": "Google LLC",
-  "domain": "google.com",
-  "net_speed": "T1",
-  "idd_code": "1",
-  "area_code": "650",
-  "weather_station_code": "USCA0746",
-  "weather_station_name": "Mountain View",
-  "mcc": "-",
-  "mnc": "-",
-  "mobile_brand": "-",
-  "elevation": 32,
-  "usage_type": "DCH",
-  "address_type": "Anycast",
-  "continent": {
-    "name": "North America",
-    "code": "NA",
-    "hemisphere": [
-      "north",
-      "west"
-    ],
-    "translation": {
-      "lang": "es",
-      "value": "Norteamérica"
-    }
-  },
-  "district": "Santa Clara County",
-  "country": {
-    "name": "United States of America",
-    "alpha3_code": "USA",
-    "numeric_code": 840,
-    "demonym": "Americans",
-    "flag": "https://cdn.ip2location.io/assets/img/flags/us.png",
-    "capital": "Washington, D.C.",
-    "total_area": 9826675,
-    "population": 331002651,
-    "currency": {
-      "code": "USD",
-      "name": "United States Dollar",
-      "symbol": "$"
-    },
-    "language": {
-      "code": "EN",
-      "name": "English"
-    },
-    "tld": "us",
-    "translation": {
-      "lang": "es",
-      "value": "Estados Unidos de América (los)"
-    }
-  },
-  "region": {
-    "name": "California",
-    "code": "US-CA",
-    "translation": {
-      "lang": "es",
-      "value": "California"
-    }
-  },
-  "city": {
-    "name": "Mountain View",
-    "translation": {
-      "lang": null,
-      "value": null
-    }
-  },
-  "time_zone_info": {
-    "olson": "America/Los_Angeles",
-    "current_time": "2023-09-03T18:21:13-07:00",
-    "gmt_offset": -25200,
-    "is_dst": true,
-    "sunrise": "06:41",
-    "sunset": "19:33"
-  },
-  "geotargeting": {
-    "metro": "807"
-  },
-  "ads_category": "IAB19-11",
-  "ads_category_name": "Data Centers",
-  "is_proxy": false,
-  "fraud_score": 0,
-  "proxy": {
-    "last_seen": 3,
-    "proxy_type": "DCH",
-    "threat": "-",
-    "provider": "-",
-    "is_vpn": false,
-    "is_tor": false,
-    "is_data_center": true,
-    "is_public_proxy": false,
-    "is_web_proxy": false,
-    "is_web_crawler": false,
-    "is_ai_crawler": false,
-    "is_residential_proxy": false,
-    "is_consumer_privacy_network":false,
-    "is_enterprise_private_network":false,
-    "is_spammer": false,
-    "is_scanner": false,
-    "is_botnet": false
-    "is_bogon": false
-  }
-}
+- **Keyless access:** No registration is required for the limited [IP Geolocation REST API](https://www.ip2location.io/ip2location-documentation). The daily quota resets at **00:00 UTC**. The Scala SDK itself requires an API key; keyless lookup is not a documented Scala SDK mode.
+- **Free plan:** Register for an API key to use the published monthly allowances, subject to the relevant quotas.
+- **Attribution:** Keyless and Free usage require attribution; refer to the [pricing page](https://www.ip2location.io/pricing) for applicable conditions.
+- **Paid plans:** Refer to the [pricing page](https://www.ip2location.io/pricing) for current limits, pricing, and features.
+
+For details about authentication and rate limiting, see the [IP Geolocation API documentation](https://www.ip2location.io/ip2location-documentation).
+
+## Requirements
+
+- **Scala 3**. The repository's [`build.sbt`](https://github.com/ip2location/ip2location-io-scala/blob/main/build.sbt) uses Scala **3.3.1**.
+- A compatible **Java Development Kit (JDK)** and [sbt](https://www.scala-sbt.org/) for building and running Scala projects.
+- **IntelliJ IDEA**, recommended in the [official Scala quickstart](https://ip2location-io-scala.readthedocs.io/en/latest/quickstart.html), if using an IDE.
+- An [IP2Location.io API key](https://www.ip2location.io/pricing) for SDK lookups.
+- Network access to the API services.
+
+The published library uses Gson to handle JSON. In an sbt project, transitive dependencies are resolved automatically.
+
+## Installation
+
+### 1. Add the Scala SDK to your project
+
+The SDK is published on [Maven Central](https://central.sonatype.com/artifact/com.ip2location/ip2location-io-scala_3). Add this dependency to your project's `build.sbt`:
+
+```scala
+libraryDependencies += "com.ip2location" %% "ip2location-io-scala" % "1.2.0"
 ```
 
-### Domain WHOIS Lookup function
-| Parameter | Type | Description |
-|---|---|---|
-|domain|string|Domain name.|
-|domain_id|string|Domain name ID.|
-|status|string|Domain name status.|
-|create_date|string|Domain name creation date.|
-|update_date|string|Domain name updated date.|
-|expire_date|string|Domain name expiration date.|
-|domain_age|integer|Domain name age in day(s).|
-|whois_server|string|WHOIS server name.|
-|registrar.iana_id|string|Registrar IANA ID.|
-|registrar.name|string|Registrar name.|
-|registrar.url|string|Registrar URL.|
-|registrant.name|string|Registrant name.|
-|registrant.organization|string|Registrant organization.|
-|registrant.street_address|string|Registrant street address.|
-|registrant.city|string|Registrant city.|
-|registrant.region|string|Registrant region.|
-|registrant.zip_code|string|Registrant ZIP Code.|
-|registrant.country|string|Registrant country.|
-|registrant.phone|string|Registrant phone number.|
-|registrant.fax|string|Registrant fax number.|
-|registrant.email|string|Registrant email address.|
-|admin.name|string|Admin name.|
-|admin.organization|string|Admin organization.|
-|admin.street_address|string|Admin street address.|
-|admin.city|string|Admin city.|
-|admin.region|string|Admin region.|
-|admin.zip_code|string|Admin ZIP Code.|
-|admin.country|string|Admin country.|
-|admin.phone|string|Admin phone number.|
-|admin.fax|string|Admin fax number.|
-|admin.email|string|Admin email address.|
-|tech.name|string|Tech name.|
-|tech.organization|string|Tech organization.|
-|tech.street_address|string|Tech street address.|
-|tech.city|string|Tech city.|
-|tech.region|string|Tech region.|
-|tech.zip_code|string|Tech ZIP Code.|
-|tech.country|string|Tech country.|
-|tech.phone|string|Tech phone number.|
-|tech.fax|string|Tech fax number.|
-|tech.email|string|Tech email address.|
-|billing.name|string|Billing name.|
-|billing.organization|string|Billing organization.|
-|billing.street_address|string|Billing street address.|
-|billing.city|string|Billing city.|
-|billing.region|string|Billing region.|
-|billing.zip_code|string|Billing ZIP Code.|
-|billing.country|string|Billing country.|
-|billing.phone|string|Billing phone number.|
-|billing.fax|string|Billing fax number.|
-|billing.email|string|Billing email address.|
-|nameservers|array|Name servers|
+The `%%` notation uses the Scala 3 artifact suffix (`_3`). Version `1.2.0` matches the repository's current `build.sbt` and its published Maven Central artifact. This project uses Scala 3; in a new project, set `scalaVersion` appropriately, for example:
 
-```json
-{
-    "domain": "locaproxy.com",
-    "domain_id": "1710914405_DOMAIN_COM-VRSN",
-    "status": "clientTransferProhibited https://icann.org/epp#clientTransferProhibited",
-    "create_date": "2012-04-03T02:34:32Z",
-    "update_date": "2021-12-03T02:54:57Z",
-    "expire_date": "2024-04-03T02:34:32Z",
-    "domain_age": 3863,
-    "whois_server": "whois.godaddy.com",
-    "registrar": {
-        "iana_id": "146",
-        "name": "GoDaddy.com, LLC",
-        "url": "https://www.godaddy.com"
-    },
-    "registrant": {
-        "name": "Registration Private",
-        "organization": "Domains By Proxy, LLC",
-        "street_address": "DomainsByProxy.com",
-        "city": "Tempe",
-        "region": "Arizona",
-        "zip_code": "85284",
-        "country": "US",
-        "phone": "+1.4806242599",
-        "fax": "+1.4806242598",
-        "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=LOCAPROXY.COM"
-    },
-    "admin": {
-        "name": "Registration Private",
-        "organization": "Domains By Proxy, LLC",
-        "street_address": "DomainsByProxy.com",
-        "city": "Tempe",
-        "region": "Arizona",
-        "zip_code": "85284",
-        "country": "US",
-        "phone": "+1.4806242599",
-        "fax": "+1.4806242598",
-        "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=LOCAPROXY.COM"
-    },
-    "tech": {
-        "name": "Registration Private",
-        "organization": "Domains By Proxy, LLC",
-        "street_address": "DomainsByProxy.com",
-        "city": "Tempe",
-        "region": "Arizona",
-        "zip_code": "85284",
-        "country": "US",
-        "phone": "+1.4806242599",
-        "fax": "+1.4806242598",
-        "email": "Select Contact Domain Holder link at https://www.godaddy.com/whois/results.aspx?domain=LOCAPROXY.COM"
-    },
-    "billing": {
-        "name": "",
-        "organization": "",
-        "street_address": "",
-        "city": "",
-        "region": "",
-        "zip_code": "",
-        "country": "",
-        "phone": "",
-        "fax": "",
-        "email": ""
-    },
-    "nameservers": ["vera.ns.cloudflare.com", "walt.ns.cloudflare.com"]
-}
+```scala
+scalaVersion := "3.3.1"
 ```
 
-### IP Hosted Domains Lookup function
-| Parameter | Type | Description |
-|---|---|---|
-|ip|string|IP address.|
-|total_domains|integer|Total number of hosted domains found.|
-|page|integer|Current lookup page.|
-|per_page|integer|Number of domains displayed in the page.|
-|total_pages|integer|Total pages of the hosted domains.|
-|domains|array|Hosted domains of the lookup IP Address.|
+From the project directory, run `sbt update` to resolve the library. Alternatively, use IntelliJ IDEA with an sbt-based Scala 3 project.
 
-```json
-{
-  "ip": "8.8.8.8",
-  "total_domains": 3858,
-  "page": 1,
-  "per_page": 100,
-  "total_pages": 39,
-  "domains": [
-    "000180.top",
-    "00100tet.xyz",
-    "001hash.vip",
-    "002hash.com",
-    "0050500.xyz",
-    "007515.com",
-    "023mm.net",
-    "023mt.net",
-    "023sn.net",
-    "031000.xyz",
-    "0515smw.com",
-    "058637.com",
-    "0798907.xyz",
-    "07capital.com",
-    "07osrs.com",
-    "07sh2wv.bar",
-    "0857.site",
-    "0931seo.com",
-    "0lzh.com",
-    "0x4f.com",
-    "0x57696c6c.com",
-    "0xb055.com",
-    "1-189tais.com",
-    "10askfcwebkvh.top",
-    "1102halfhowehbao1.com",
-    "1102hdfkeuwuhfubao2.com",
-    "1102hdukefjkf2.com",
-    "1102sdbkwuoubao3.com",
-    "11107hdkjhguk.com",
-    "111km.xyz",
-    "1130kfhuhw.com",
-    "11eqlhon.top",
-    "1206m.site",
-    "125ap.com",
-    "12la21wn31da40le6.com",
-    "12safhoie.top",
-    "12tivi.com",
-    "1333limited.com",
-    "1333yyh.com",
-    "135493.com",
-    "136668.xyz",
-    "13shkuwq.top",
-    "142937440.site",
-    "144888.xyz",
-    "14whoduhw.top",
-    "1562yjargm.xyz",
-    "15sdkwb.top",
-    "167853.xyz",
-    "168.one",
-    "168km.xyz",
-    "16uhwfuhe.cyou",
-    "176274.com",
-    "17diqwehfoi.cyou",
-    "17jule.com",
-    "18uhefoh.cyou",
-    "191095211.xyz",
-    "19931006.xyz",
-    "19g.vip",
-    "19wuji.cyou",
-    "1huofhoehfogakfwqqq.com",
-    "1ine1.com",
-    "1master-fitness.com",
-    "1rf3k.com",
-    "1s1s.app",
-    "1visualizer.app",
-    "200250.xyz",
-    "20070217.xyz",
-    "20088888.xyz",
-    "20230406.mov",
-    "205566.com",
-    "205artemisbet.com",
-    "20iiij.cyou",
-    "21107ahsfukhweo.com",
-    "21hodheoh.cyou",
-    "22bahman.space",
-    "22howhw.cyou",
-    "231q.top",
-    "234n.top",
-    "236j.top",
-    "23hw.cyou",
-    "24asfbkhb.cyou",
-    "24ihhcorp.com",
-    "25dgfu.cyou",
-    "26asfhku.cyou",
-    "277210.shop",
-    "27adfljn.cyou",
-    "28dshkf.cyou",
-    "29583.biz",
-    "29dakfb.cyou",
-    "2ashdowehofhweohfo.com",
-    "2c.com",
-    "2qdrap.com",
-    "2s1c.com",
-    "304065117.xyz",
-    "30fwhdfkb.cyou",
-    "3101r.space",
-    "31107abskjfbekb.com",
-    "315sx.com",
-    "31dfhkjsdb.cyou",
-    "325965.com"
-  ]
-}
+### 2. Set your API key
+
+Store the API key in an environment variable instead of committing it to your source code.
+
+**Linux / macOS terminal:**
+
+```bash
+export IP2LOCATION_API_KEY='YOUR_API_KEY'
 ```
 
-LICENCE
-=====================
-See the LICENSE file.
+**Windows Command Prompt:**
+
+```bat
+set IP2LOCATION_API_KEY=YOUR_API_KEY
+```
+
+**Windows PowerShell:**
+
+```powershell
+$env:IP2LOCATION_API_KEY = 'YOUR_API_KEY'
+```
+
+The examples below use `sys.env.getOrElse` to read this environment variable. The official quickstart demonstrates the same `Configuration` and `setApiKey()` calls with a literal API-key placeholder.
+
+## Quickstart: IP geolocation lookup
+
+Create `src/main/scala/Lookup.scala` in your Scala 3 sbt project:
+
+```scala
+import com.ip2location.{Configuration, IPGeolocation}
+
+@main def lookup(): Unit =
+  val apiKey = sys.env.getOrElse("IP2LOCATION_API_KEY",
+    throw new IllegalArgumentException("Set IP2LOCATION_API_KEY."))
+
+  val config = new Configuration()
+  config.setApiKey(apiKey)
+
+  val geo = new IPGeolocation(config)
+  val result = geo.lookUp("8.8.8.8")
+  println(result)
+```
+
+Run the example from the project directory:
+
+```bash
+sbt run
+```
+
+The official [Scala quickstart](https://ip2location-io-scala.readthedocs.io/en/latest/quickstart.html) demonstrates `lookUp("8.8.8.8", "es")` for translated location names; the language parameter is optional and is omitted here for a basic lookup. Returned JSON fields depend on the API plan and queried IP address. See the [geolocation field reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html#ipgeolocation-class).
+
+## More usage examples
+
+The following examples show individual lookups as `@main` programs. They assume that the SDK dependency is installed and that `IP2LOCATION_API_KEY` has been set as described above. Save each example in its own Scala source file (or adapt the snippet within your existing application).
+
+### Request translated location names
+
+The optional `lang` argument accepts an ISO 639-1 language code. Translated continent, country, region, and city names are supported on **Plus and Security** plans.
+
+```scala
+import com.ip2location.{Configuration, IPGeolocation}
+
+@main def translatedLookup(): Unit =
+  val config = new Configuration()
+  config.setApiKey(sys.env("IP2LOCATION_API_KEY"))
+  val geo = new IPGeolocation(config)
+  val result = geo.lookUp("8.8.8.8", "es")
+  println(result)
+```
+
+### Inspect available network and ASN information
+
+The geolocation response can include `asn`, `as`, `isp`, `domain`, and the nested `as_info` object, depending on your plan. The following is an adaptation of the official geolocation lookup that prints the complete result for inspection:
+
+```scala
+import com.ip2location.{Configuration, IPGeolocation}
+
+@main def networkLookup(): Unit =
+  val config = new Configuration()
+  config.setApiKey(sys.env("IP2LOCATION_API_KEY"))
+  val geo = new IPGeolocation(config)
+  val result = geo.lookUp("8.8.8.8")
+  println(result)
+```
+
+Refer to the [Scala API response fields](https://ip2location-io-scala.readthedocs.io/en/latest/code.html#ipgeolocation-class) for network attributes returned by your plan.
+
+### Inspect available proxy indicators
+
+On eligible plans, the geolocation response contains security fields such as `is_proxy`, `fraud_score`, and an optional `proxy` object with indicators including `is_vpn`, `is_tor`, and `is_data_center`. The code below uses the documented lookup and prints its JSON response; inspect the presence of relevant fields before using them in application decisions.
+
+```scala
+import com.ip2location.{Configuration, IPGeolocation}
+
+@main def proxyLookup(): Unit =
+  val config = new Configuration()
+  config.setApiKey(sys.env("IP2LOCATION_API_KEY"))
+  val geo = new IPGeolocation(config)
+  val result = geo.lookUp("8.8.8.8")
+  println(result)
+```
+
+Security signals are supporting context, not proof of malicious behavior.
+
+### Look up domain WHOIS information
+
+Use `DomainWhois.lookUp()` to retrieve available domain registration details. Domain contact records may be missing or redacted.
+
+```scala
+import com.ip2location.{Configuration, DomainWhois}
+
+@main def whoisLookup(): Unit =
+  val config = new Configuration()
+  config.setApiKey(sys.env("IP2LOCATION_API_KEY"))
+
+  val whois = new DomainWhois(config)
+  val result = whois.lookUp("locaproxy.com")
+  println(result)
+```
+
+The WHOIS response can include registration and expiration dates, status, registrar details, nameservers, and available contacts. See the [DomainWhois class reference](https://ip2location-io-scala.readthedocs.io/en/latest/code.html#domainwhois-class).
+
+### Use domain and Punycode utilities
+
+The `DomainWhois` class exposes the following helpers in the official Read the Docs examples:
+
+```scala
+import com.ip2location.{Configuration, DomainWhois}
+
+@main def domainUtilities(): Unit =
+  val config = new Configuration()
+  val whois = new DomainWhois(config)
+
+  println(whois.toPunycode("täst.de"))
+  println(whois.toNormalText("xn--tst-qla.de"))
+  println(whois.toDomainName("https://www.example.com/exe"))
+  println(whois.toDomainExtension("example.com"))
+```
+
+These utility methods do not require a WHOIS API lookup in the documented examples.
+
+### Find domains hosted on an IP address
+
+Use `HostedDomain.lookUp(ipAddress, page)` to list domains hosted on an IP address. The Read the Docs quickstart supplies page `1` explicitly.
+
+```scala
+import com.ip2location.{Configuration, HostedDomain}
+
+@main def hostedDomainLookup(): Unit =
+  val config = new Configuration()
+  config.setApiKey(sys.env("IP2LOCATION_API_KEY"))
+
+  val hosted = new HostedDomain(config)
+  val result = hosted.lookUp("8.8.8.8", 1)
+  println(result)
+```
+
+Request additional pages with `2`, `3`, and so on, when the response indicates more pages. Documented response fields include `total_domains`, `page`, `per_page`, `total_pages`, and `domains`.
+
+## Scala project and dependency troubleshooting
+
+- **Cannot resolve the SDK artifact:** Confirm that your project uses Scala 3 and the dependency coordinates `"com.ip2location" %% "ip2location-io-scala" % "1.2.0"`. The published Maven artifact is named `ip2location-io-scala_3`.
+- **Import or class not found:** Ensure that sbt has loaded the project dependencies, and import from `com.ip2location`, as shown in the official quickstart.
+- **API key errors:** Verify that `IP2LOCATION_API_KEY` is available to the process running sbt or IntelliJ IDEA. Environment variables set after the IDE starts may not be inherited until it is restarted.
+- **Missing response fields:** Check API plan eligibility and the specific lookup result. Optional network, translation, and security fields are not guaranteed for every query.
+- **Multiple `@main` examples:** Keep examples in separate files or choose the desired entry point when your project defines more than one runnable main method.
+
+## Common use cases
+
+- **Application and website localization:** Suggest region-appropriate content, language, or currency using approximate IP location.
+- **Traffic analytics:** Enrich server or application events with country, region, ASN, and ISP information.
+- **Security review:** Add available proxy, VPN, Tor, or crawler indicators to a broader risk analysis instead of relying on any single signal.
+- **Domain research:** Retrieve available registrar details, registration dates, statuses, and nameservers.
+- **Network and hosting research:** Investigate associated network attributes and domains hosted on an IP address.
+
+## Documentation and support
+
+- [Scala SDK quickstart and official sample codes](https://ip2location-io-scala.readthedocs.io/en/latest/quickstart.html)
+- [Scala SDK API reference and response fields](https://ip2location-io-scala.readthedocs.io/en/latest/code.html)
+- [Official GitHub repository](https://github.com/ip2location/ip2location-io-scala)
+- [Maven Central package](https://central.sonatype.com/artifact/com.ip2location/ip2location-io-scala_3)
+- [IP2Location.io API plans and query limits](https://www.ip2location.io/pricing)
+- [IP Geolocation API authentication and rate limits](https://www.ip2location.io/ip2location-documentation)
+- [Report a Scala SDK issue or request a feature](https://github.com/ip2location/ip2location-io-scala/issues)
+- [API and account support](https://www.ip2location.io/contact-us)
+
+## License
+
+Licensed under the **MIT License**. See [LICENSE](./LICENSE).
